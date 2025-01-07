@@ -5,95 +5,88 @@ A Retrieval-Augmented Generation (RAG) chatbot system that allows users to query
 ## Overview
 
 This project implements a RAG system that:
-- Loads and processes book reviews from a CSV dataset.
-- Creates embeddings for semantic search.
-- Maintains a vector database of reviews.
-- Handles both specific book queries and general questions.
-- Generates natural language responses based on relevant reviews.
-- Includes a factuality-check mechanism to validate generated responses against retrieved reviews.
+- Loads and processes text data (cat facts or book reviews) for demonstration
+- Creates embeddings for semantic search  
+- Maintains a vector database of content
+- Handles various types of queries
+- Generates natural language responses based on relevant content
+- Optionally includes factuality checking for response validation
 
-## Requirements
+## Running in Google Colab
 
+1. Open the ```Run_In_Colab.ipynb``` notebook in Google Colab
+2. Select GPU runtime (Edit -> Notebook settings -> Hardware accelerator -> GPU)
+3. Install and setup Ollama in Xterm section
+4. In the opened terminal window, run:
+   - ```curl -fsSL https://ollama.com/install.sh | sh```
+   - ```ollama serve &```
+5. Run the notebook sections:
+   - Cat Facts Demo: Simple RAG implementation with a small dataset
+   - Book Reviews Chatbot: Advanced RAG system for querying book reviews  
+   - Book Reviews with Factuality: Enhanced version with response validation
+
+## Running Locally
+
+### Requirements
 - Python 3.8+
 - Ollama
-- CSV module
-- NLTK (Natural Language Toolkit)
+- Required Python packages:
+   - ```pip install langchain_community scikit-learn==1.6.0 nltk```
 
-## Installation
+### Ollama Setup
 
-1. Download or clone the repository:
-   ```bash
-   git clone https://github.com/KutashiMA/book-review-rag-chatbot.git
-   ```
+1. Install Ollama from [ollama.com](http://ollama.com)
+2. Pull required models:
+   - ```ollama pull llama3.2```
+   - ```ollama pull hf.co/CompendiumLabs/bge-base-en-v1.5-gguf```
+   - ```ollama pull bespoke-minicheck```
 
-2. Install required packages:
-   ```bash
-   pip install ollama nltk
-   ```
+### Running the Scripts
 
-3. Download and set up Ollama models:
+1. Simple Cat Facts Demo:
+   - ```python cat_rag.py```
 
-   First, install Ollama from its official website:  
-   [ollama.com](http://ollama.com)
+2. Book Reviews Chatbot:
+   - ```python book_review_rag.py```
 
-   Then, open a terminal and download the required models using the following commands:
-   ```bash
-   ollama pull hf.co/CompendiumLabs/bge-base-en-v1.5-gguf
-   ollama pull hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF
-   ollama pull bespoke-minicheck
-   ```
-
-## Usage
-
-1. Run the chatbot:
-   ```bash
-   python RAG_Model_Books_v8.py
-   ```
-
-2. Interact with the chatbot by entering your questions when prompted. The system supports:
-   - Specific book queries (e.g., "What do people think of [Book Title]?")
-   - General questions about reviews (e.g., "What books are least recommended based on reviews?")
-
-3. Type "exit" to quit the chatbot.
+3. Book Reviews with Factuality Check:
+   - ```python fact_book_review_rag.py```
 
 ## Features
 
-- **Semantic Search**: Uses embeddings to retrieve reviews based on meaning, not just keywords.
-- **Dual Query Handling**:
-  - Book-specific queries filter reviews by exact title matches.
-  - General queries use semantic similarity across all reviews.
-- **Natural Language Responses**: Generates coherent responses based on retrieved reviews.
-- **Factuality Validation**: Ensures generated claims align with retrieved reviews using the `bespoke-minicheck` model.
-- **Dynamic Progress Indicators**: Includes visual feedback during data indexing, retrieval, and factuality checks.
+- **Semantic Search**: Uses embeddings to retrieve content based on meaning
+- **Multiple Query Types**:
+   - Specific book queries
+   - Content keyword searches
+   - General questions
+- **Natural Language Responses**: Generates coherent responses from retrieved content
+- **Optional Factuality Validation**: Ensures generated claims align with source content
+- **Progress Tracking**: Visual feedback during processing steps
 
 ## System Architecture
 
-1. **Data Loading & Preprocessing**
-   - Loads reviews from a CSV file.
-   - Preprocesses text to remove stopwords and truncate long reviews for concise embeddings.
-   - Tokenizes and cleans text for embedding generation.
+1. **Data Loading & Processing**
+   - Loads content from text/CSV files
+   - Preprocesses text for embedding generation
 
 2. **Vector Database**
-   - Stores review content and embeddings for efficient similarity search.
+   - Stores content and embeddings for similarity search
 
 3. **Query Processing**
-   - Detects query type (book-specific vs. general).
-   - Creates query embeddings.
-   - Retrieves relevant reviews from the vector database.
+   - Creates query embeddings
+   - Retrieves relevant content
+   - Combines semantic and keyword search results
 
 4. **Response Generation**
-   - Uses a language model to generate responses based on retrieved reviews.
-   - Validates generated responses using factuality checks.
-
-5. **Factuality Check**
-   - Utilizes the `bespoke-minicheck` model to ensure claims align with the retrieved review context.
+   - Generates responses using retrieved content
+   - Optional factuality validation
 
 ## Limitations
 
-- Reviews must follow the specified CSV format.
-- Requires local installation of Ollama and specific models.
-- Title matching is case-sensitive.
-- Review length is truncated to 1000 characters.
+- Requires GPU for optimal performance
+- Depends on Ollama installation
+- Limited by quality and coverage of source content
+- Response generation time varies with dataset size
 
 ## Contributing
 
@@ -105,6 +98,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Acknowledgments
 
-- Based on the [RAG implementation tutorial from Hugging Face](https://huggingface.co/blog/ngxson/make-your-own-rag).
-- Uses Ollama for embeddings and language model inference.
-- Inspired by the blog article on reducing hallucinations with Bespoke Minicheck: [Reduce Hallucinations with Bespoke Minicheck](https://ollama.com/blog/reduce-hallucinations-with-bespoke-minicheck)
+- Uses [Ollama](https://ollama.com) for embeddings and language model inference
+- Based on [RAG implementation guide](https://huggingface.co/blog/ngxson/make-your-own-rag) from Hugging Face
+- [Colab implementation](https://medium.com/cool-devs/how-to-run-ollama-on-google-colab-ffc1713b64c9) based on Medium article
+- Incorporates factuality checking using [Bespoke Minicheck](https://ollama.com/library/bespoke-minicheck)
